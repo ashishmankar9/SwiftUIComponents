@@ -16,12 +16,16 @@ struct ContentView: View {
 }
 
 struct AddYourComponents: View {
+    @Binding var dismissFlag:Bool
     var action:()->()
     var body: some View {
         VStack{
             Text("Hello").bold().font(.title).padding()
             Text("We are glat to find you here.").bold().font(.subheadline).padding()
             Button(action: {
+                withAnimation {
+                    dismissFlag.toggle()
+                }
                 action()
                 debugPrint("Button Tapped")
             }, label: {
@@ -32,14 +36,14 @@ struct AddYourComponents: View {
 }
 
 struct BottomSheetView: View {
-    var transperancy:Double = 0
+    var transperancy:Double = 0.5
     var cornerRadius:CGFloat = 0
     var action:()->()
     @State var dismissFlag = false
     var body: some View {
         GeometryReader(content: { geometry in
             ZStack(alignment:.bottom){
-                Color(.gray)
+                Color(.black)
                     .opacity(transperancy)
                     .edgesIgnoringSafeArea(dismissFlag ? .all : .top)
                     .onTapGesture {
@@ -49,7 +53,7 @@ struct BottomSheetView: View {
                     }
                 VStack(alignment:.leading){
                     VStack{
-                        AddYourComponents(action: action)
+                        AddYourComponents(dismissFlag: $dismissFlag, action: action)
                     }
                     .frame(maxWidth:.infinity)
                     .background(Color.white)
